@@ -1,0 +1,19 @@
+db:
+  host:     "localhost"
+  port:     "15432"
+  username: "vallkof"
+  password: "password"
+  db_name:   "enrichdb"
+  sslmode:  "disable"
+  db_url: "postgres://vallkof:password@localhost:15432/enrichdb?sslmode=disable"
+  db_max_open_connections: 10
+
+http_server:
+  address: "localhost:8080"
+  timeout: 4s
+  ctx_timeout: 60s
+  idle_timeout: 60s
+api:
+  age_url: https://api.agify.io
+  gender_url: https://api.genderize.io
+  nationality_url: https://api.nationalize.io
