@@ -1,0 +1,200 @@
+openapi: 3.0.3
+info:
+  title: Микросервис для работы с сущностями
+  description: API for profiles
+  version: 1.0.0
+
+tags:
+  - name: system
+    description: Информация о жизни сервиса
+  - name: users
+    description: Работа с пользователями
+
+paths:
+  /ready:
+    get:
+      tags:
+        - "system"
+      summary: Проверка работоспособности сервиса
+      description: Проверка внешних компонентов, от которых зависит рабоспособность сервиса
+      responses:
+        "200":
+          description: Сервис готов обрабатывать запросы
+        "500":
+          description: Сервис не может обрабатывать запросы
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v1/enrich/users:
+    get:
+      tags:
+        - "users"
+      summary: Получение пользователя по его id
+      parameters:
+        - name: id
+          in: query
+          description: id пользователя в БД
+          schema:
+            type: integer
+            minimum: 1
+        - name: all
+          description: Выводит всех пользователей
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: JSON
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Users"
+        "404":
+          description: Пользователь не найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутрення ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - "users"
+      summary: Добавление данных пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                $ref: "#/components/schemas/Users"
+      responses:
+        "201":
+          description: Данные сохранены
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Id"
+        "400":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - "users"
+      summary: Обновление данных пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                $ref: "#/components/schemas/Users"
+      responses:
+        "200":
+          description: Данные пользователя обновлены
+        "400":
+          description: Плохой запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Данные пользователя не найдены
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутренняя ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - "users"
+      summary: Удаление данных пользователя
+      parameters:
+        - name: id
+          in: query
+          description: id данных пользователя в бд
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "204":
+          description: Данные были успешно удалена
+        "404":
+          description: Данные пользователя не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Внутрення ошибка сервиса
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Error:
+      properties:
+        error:
+          type: string
+      required:
+        - "error"
+    Users:
+      properties:
+        user_id:
+          type: integer
+        name:
+          type: string
+        surname:
+          type: string
+        patronymic:
+          type: string
+        age:
+          type: integer
+        gender:
+          type: string
+        nationality:
+          type: string
+
+      required:
+        - "user_id"
+        - "name"
+        - "surname"
+
+    Id:
+      properties:
+        id:
+          type: integer
+      required:
+        - "id"
